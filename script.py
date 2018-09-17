@@ -1,10 +1,13 @@
+
 #Import the necessary methods from tweepy library
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 from kafka import SimpleProducer, KafkaClient
-import os
 
+
+from tweepy.streaming import StreamListener
+import tweepy
 
 #Variables that contains the user credentials to access Twitter API 
 access_token = "access_token"
@@ -13,26 +16,42 @@ consumer_key = "consumer_key"
 consumer_secret = "consumer_secret"
 
 
-#This is a basic listener that just prints received tweets to stdout.
-class StdOutListener(StreamListener):
+class TweeterStreamListener(StreamListener):
+    """ A class to read the twitter stream and push it to Kafka"""
 
     def on_data(self, data):
-        print(data)
-        producer.send_messages("trump", data.encode('utf-8'))
+        """ This method is called whenever new data arrives from live stream.
+        We asynchronously push this data to kafka queue"""
+        #msg =  status.text.encode('utf-8')
+        try:
+            #self.producer.send_messages('test', msg)
+            producer.send_messages("trump", data.encode('utf-8'))
+            print(data)
+        except Exception as e:
+            print(e)
+            return False
         return True
 
-    def on_error(self, status):
-        print(status)
+    def on_error(self, status_code):
+        print("Error received in kafka producer")
+        return True # Don't kill the stream
 
+    def on_timeout(self):
+        return True # Don't kill the stream
 
 if __name__ == '__main__':
 
     kafka = KafkaClient("localhost:9092")
     producer = SimpleProducer(kafka)
-    #This handles Twitter authetification and the connection to Twitter Streaming API
-    l = StdOutListener()
+    l = TweeterStreamListener()
+
+    # Create Auth object
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
+
+    # Create stream and bind the listener to it
     stream = Stream(auth, l)
-    #This line filter Twitter Streams to capture data by the keywords: 'trump'
+
+    #Custom Filter rules pull all traffic for those filters in real time.
+    #stream.filter(track = ['love', 'hate'], languages = ['en'])
     stream.filter(track='trump')
