@@ -21,6 +21,7 @@ You need to install dependent packages from requirements.txt using<br/>
 Go to the kafka home and do the following
 
 1. start zookeeper in one terminal tab:
+		$ cd kafka_2.11-2.0.0
 		$ bin/zookeeper-server-start.sh config/zookeeper.properties
 		
 2. Start Kafka in another terminal tab:

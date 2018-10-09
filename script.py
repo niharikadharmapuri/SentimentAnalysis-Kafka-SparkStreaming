@@ -25,7 +25,7 @@ class TweeterStreamListener(StreamListener):
         #msg =  status.text.encode('utf-8')
         try:
             #self.producer.send_messages('test', msg)
-            producer.send_messages("trump", data.encode('utf-8'))
+            producer.send_messages("topicname", data.encode('utf-8'))# publish messages to this topicname from the twitter
             print(data)
         except Exception as e:
             print(e)
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     kafka = KafkaClient("localhost:9092")
     producer = SimpleProducer(kafka)
-    l = TweeterStreamListener()
+    l = TweeterStreamListener() #instance of class
 
     # Create Auth object
     auth = OAuthHandler(consumer_key, consumer_secret)
@@ -54,4 +54,4 @@ if __name__ == '__main__':
 
     #Custom Filter rules pull all traffic for those filters in real time.
     #stream.filter(track = ['love', 'hate'], languages = ['en'])
-    stream.filter(track='trump')
+    stream.filter(track='searchkey')# fileter the tweets with the searchkey that you want 
