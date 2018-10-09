@@ -1,16 +1,22 @@
+# Basic consumer and producer example
+
 In terminal
 
 cd kafka_2.11-2.0.0
 bin/zookeeper-server-start.sh config/zookeeper.properties
 
+In another terminal
 bin/kafka-server-start.sh config/server.properties
 
+In another terminal, create a topic 
 bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
 
 
+# start a console producer
 bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 >Type your message here
 
+#start a consumer that listens to changes and shows the changes on console
  bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
 >Type your message here
 

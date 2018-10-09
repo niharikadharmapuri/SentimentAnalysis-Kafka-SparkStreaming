@@ -1,0 +1,9 @@
+Use case:
+
+use built in Kafka connectors to  monitor a file(monitoring.txt) and publish any new lines added to that file to a given Kafka topic that then get written out to some other file(logout.txt) somewhere else.
+
+You need to make changes to the source and sink properties file. And then run 
+bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties config/connect-file-sink.properties.
+
+
+
